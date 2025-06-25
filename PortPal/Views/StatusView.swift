@@ -1,3 +1,11 @@
+//
+//  StatusView.swift
+//  PortPal
+//
+//  Created by Nathanael Sumpter on 6/25/25.
+//
+import SwiftUI
+
 struct StatusView: View {
     @ObservedObject var bluetoothManager: BluetoothManager
     
