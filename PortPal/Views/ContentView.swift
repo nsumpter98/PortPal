@@ -32,7 +32,6 @@ struct ContentView: View {
             .toolbarBackground(.regularMaterial, for: .tabBar)
             .toolbarBackground(.visible, for: .tabBar)
             .onChange(of: selectedTab) {
-                // Haptic Feedback
                 let generator = UIImpactFeedbackGenerator(style: .heavy)
                 generator.impactOccurred()
             }
