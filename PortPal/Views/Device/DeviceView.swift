@@ -30,19 +30,7 @@ struct DeviceView: View {
             }
         }
         .sheet(isPresented: $isPresentingFindDeviceSheet) {
-            List {
-                if (bluetoothManager.discoveredPeripherals.count >= 1){
-                    List(bluetoothManager.discoveredPeripherals, id: \.identifier) { peripheral in
-                        Button(peripheral.name ?? "Unknown Device") {
-                            bluetoothManager.connect(peripheral: peripheral)
-                        }
-                    }
-                } else {
-                    Text("Nothing to show right now! 👻")
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                }
-            }
+            FindDeviceSheetView(bluetoothManager: bluetoothManager)
             .presentationDetents([
                 .height(400),
                 .fraction(0.5),
