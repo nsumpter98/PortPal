@@ -12,36 +12,53 @@ struct DeviceView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                if let peripheral = bluetoothManager.connectedPeripheral {
-                    Text("Connected: \(peripheral.name ?? "Unknown")")
-                    ABControlView(bluetoothManager: bluetoothManager, peripheral: peripheral)
+            ZStack {
+                VStack {
+                    if let peripheral = bluetoothManager.connectedPeripheral {
+                        List{
+                            Section("Device Info"){
+                                Text("Connected: \(peripheral.name ?? "Unknown")")
+                                Text("State: \(peripheral.state)")
+                            }
+                            Section("Services") {
+                                ForEach(bluetoothManager.discoveredServices, id: \.uuid) { service in
+                                    Text(service.uuid.uuidString)
+                                }
+                            }
+                            Section("Characteristics"){
+                                ForEach(bluetoothManager.discoveredCharacteristics, id: \.uuid) { characteristic in
+                                    Text(characteristic.uuid.uuidString)
+                                }
+                            }
+                            Section("Controls"){
+                                ABControlView(bluetoothManager: bluetoothManager, peripheral: peripheral)
+                            }
+                        }
+                    } else {
+                        Text("No Device Connected")
+                            .foregroundStyle(.secondary)
+                    }
                 }
-            }
-            .padding()
-            .navigationTitle("Device")
-            .toolbar {
-                Button(action: {
-                    isPresentingFindDeviceSheet = true
-                }) {
-                    Text("Find")
-                    Image(systemName: "filemenu.and.selection")
-                }
+                .padding()
+                .navigationTitle("Device")
+                
+                /// Floating Action Button
+                ActionButtonView(isPresentingFindDeviceSheet: $isPresentingFindDeviceSheet)
             }
         }
         .sheet(isPresented: $isPresentingFindDeviceSheet) {
             FindDeviceSheetView(bluetoothManager: bluetoothManager)
-            .presentationDetents([
-                .height(400),
-                .fraction(0.5),
-                .medium,
-                .large
-            ])
+                .presentationDetents([
+                    .height(400),
+                    .fraction(0.5),
+                    .medium,
+                    .large
+                ])
         }
     }
 }
 
 #Preview {
-    var bluetoothmanager = BluetoothManager()
+    let bluetoothmanager = BluetoothManager()
     DeviceView(bluetoothManager: bluetoothmanager)
 }

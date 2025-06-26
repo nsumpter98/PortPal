@@ -81,10 +81,12 @@ extension BluetoothManager: CBCentralManagerDelegate {
 }
 
 extension BluetoothManager: CBPeripheralDelegate {
-    // CBPeripheralDelegate
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         guard let services = peripheral.services else { return }
-        discoveredServices = services
+        DispatchQueue.main.async {
+            self.discoveredServices = services
+            self.discoveredCharacteristics = [] // Reset on new service discovery
+        }
         for service in services {
             peripheral.discoverCharacteristics(nil, for: service)
         }
@@ -92,12 +94,12 @@ extension BluetoothManager: CBPeripheralDelegate {
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         guard let characteristics = service.characteristics else { return }
-        for characteristic in characteristics {
-            if characteristic.properties.contains(.write) || characteristic.properties.contains(.writeWithoutResponse) {
-                DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            self.discoveredCharacteristics.append(contentsOf: characteristics)
+            for characteristic in characteristics {
+                if characteristic.properties.contains(.write) || characteristic.properties.contains(.writeWithoutResponse) {
                     self.writableCharacteristic = characteristic
                 }
-                break
             }
         }
     }
