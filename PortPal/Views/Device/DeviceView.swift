@@ -39,11 +39,14 @@ struct DeviceView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .padding()
                 .navigationTitle("Device")
                 
                 /// Floating Action Button
                 ActionButtonView(isPresentingFindDeviceSheet: $isPresentingFindDeviceSheet)
+                    .background() {
+                        Capsule()
+                            .fill(.clear)
+                    }
             }
         }
         .sheet(isPresented: $isPresentingFindDeviceSheet) {

@@ -15,26 +15,22 @@ struct ContentView: View {
     var body: some View {
         
         TabView(selection: $selectedTab){
-            Group {
-                StatusView(bluetoothManager: bluetoothManager)
-                    .tabItem {
-                        Image(systemName: "paperplane.fill")
-                        Text("Status")
-                    }
-                    .tag(0)
-                DeviceView(bluetoothManager: bluetoothManager)
-                    .tabItem {
-                        Image(systemName: "externaldrive.connected.to.line.below.fill")
-                        Text("Devices")
-                    }
-                    .tag(1)
-            }
-            .toolbarBackground(.regularMaterial, for: .tabBar)
-            .toolbarBackground(.visible, for: .tabBar)
-            .onChange(of: selectedTab) {
-                let generator = UIImpactFeedbackGenerator(style: .heavy)
-                generator.impactOccurred()
-            }
+            
+            StatusView(bluetoothManager: bluetoothManager)
+                .tabItem {
+                    Label("Status", systemImage: "paperplane.fill")
+                }
+                .tag(0)
+            DeviceView(bluetoothManager: bluetoothManager)
+                .tabItem {
+                    Label("Devices", systemImage: "externaldrive.connected.to.line.below.fill")
+                }
+                .tag(1)
+            
+        }
+        .onChange(of: selectedTab) {
+            let generator = UIImpactFeedbackGenerator(style: .heavy)
+            generator.impactOccurred()
         }
     }
 }
