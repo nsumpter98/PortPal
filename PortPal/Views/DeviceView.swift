@@ -8,48 +8,52 @@ import SwiftUI
 
 struct DeviceView: View {
     @ObservedObject var bluetoothManager: BluetoothManager
+    @State private var isPresentingFindDeviceSheet = false
     
     var body: some View {
-        VStack {
-            List(bluetoothManager.discoveredPeripherals, id: \.identifier) { peripheral in
-                Button(peripheral.name ?? "Unknown Device") {
-                    bluetoothManager.connect(peripheral: peripheral)
+        NavigationView {
+            VStack {
+                if let peripheral = bluetoothManager.connectedPeripheral {
+                    Text("Connected: \(peripheral.name ?? "Unknown")")
+                    ABControlView(bluetoothManager: bluetoothManager, peripheral: peripheral)
                 }
             }
-            if let peripheral = bluetoothManager.connectedPeripheral {
-                Text("Connected: \(peripheral.name ?? "Unknown")")
-                HStack {
-                    Button("Send A") {
-                        let impactMed = UIImpactFeedbackGenerator(style: .medium)
-                        impactMed.impactOccurred()
-                        if let characteristic = bluetoothManager.writableCharacteristic {
-                            let data = "A".data(using: .utf8)!
-                            bluetoothManager.write(value: data, characteristic: characteristic)
-                        }
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.blue)
-                    
-                    Button("Send B") {
-                        let impactMed = UIImpactFeedbackGenerator(style: .medium)
-                        impactMed.impactOccurred()
-                        if let characteristic = bluetoothManager.writableCharacteristic {
-                            let data = "B".data(using: .utf8)!
-                            bluetoothManager.write(value: data, characteristic: characteristic)
-                        }
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.green)
-                    Button("Disconnect") {
-                        let impactMed = UIImpactFeedbackGenerator(style: .medium)
-                        impactMed.impactOccurred()
-                        bluetoothManager.disconnect(peripheral: peripheral)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.red)
+            .padding()
+            .navigationTitle("Device")
+            .toolbar {
+                Button(action: {
+                    isPresentingFindDeviceSheet = true
+                }) {
+                    Text("Find")
+                    Image(systemName: "filemenu.and.selection")
                 }
             }
         }
-        .padding()
+        .sheet(isPresented: $isPresentingFindDeviceSheet) {
+            List {
+                if (bluetoothManager.discoveredPeripherals.count >= 1){
+                    List(bluetoothManager.discoveredPeripherals, id: \.identifier) { peripheral in
+                        Button(peripheral.name ?? "Unknown Device") {
+                            bluetoothManager.connect(peripheral: peripheral)
+                        }
+                    }
+                } else {
+                    Text("Nothing to show right now! 👻")
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .presentationDetents([
+                .height(400),
+                .fraction(0.5),
+                .medium,
+                .large
+            ])
+        }
     }
+}
+
+#Preview {
+    var bluetoothmanager = BluetoothManager()
+    DeviceView(bluetoothManager: bluetoothmanager)
 }
