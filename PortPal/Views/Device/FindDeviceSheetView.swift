@@ -38,7 +38,7 @@ struct FindDeviceSheetView: View {
 }
 
 #Preview {
-    var bluetoothmanager = BluetoothManager()
+    let bluetoothmanager = BluetoothManager()
     FindDeviceSheetView(bluetoothManager: bluetoothmanager)
 }
 

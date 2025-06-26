@@ -26,6 +26,6 @@ struct StatusView: View {
 }
 
 #Preview {
-    var bluetoothmanager = BluetoothManager()
+    let bluetoothmanager = BluetoothManager()
     StatusView(bluetoothManager: bluetoothmanager)
 }
