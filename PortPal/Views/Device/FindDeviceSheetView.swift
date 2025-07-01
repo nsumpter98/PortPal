@@ -15,10 +15,14 @@ struct FindDeviceSheetView: View {
             VStack {
                 if (bluetoothManager.discoveredPeripherals.count >= 1){
                     List(bluetoothManager.discoveredPeripherals, id: \.identifier) { peripheral in
-                        Button(peripheral.name ?? "Unknown Device") {
+                        Button(action: {
                             dismiss()
                             bluetoothManager.connect(peripheral: peripheral)
+                        }) {
+                            Text(peripheral.name ?? "Unknown Device")
                         }
+                        .foregroundColor(Color.white)
+                        .tint(.blue)
                     }
                 } else {
                     Text("Nothing to show right now! 👻")

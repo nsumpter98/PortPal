@@ -11,16 +11,25 @@ struct StatusView: View {
     
     var body: some View {
         NavigationView {
-            VStack{
-                Text(bluetoothManager.isBluetoothOn ? "Bluetooth ON" : "Bluetooth OFF")
-                    .tabItem {
-                        Image(systemName: "paperplane.fill")
-                        Text("Status")
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Image(systemName: "antenna.radiowaves.left.and.right")
+                        .foregroundStyle(.blue)
+                        .font(.system(size: 24))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("State: \(bluetoothManager.isBluetoothOn ? "Bluetooth ON" : "Bluetooth OFF")")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
-                    .foregroundColor(bluetoothManager.isBluetoothOn ? .green : .red)
-                    .padding()
+                    Spacer()
+                }
+                .padding(.bottom, 2)
+                
             }
-            .navigationTitle("Status")
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color(.secondarySystemBackground)))
+            .padding(.horizontal)
         }
     }
 }
